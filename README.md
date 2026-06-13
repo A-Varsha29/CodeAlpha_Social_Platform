@@ -18,7 +18,7 @@ Follow these steps to run the project locally on your machine;
 1. CLONE THE REPOSITORY:
    ``` bash
    git clone https://github.com/A-Varsha29/CodeAlpha_Social_Platform.git
-   cd CodeAlpha_Socisl_Platform
+   cd CodeAlpha_Social_Platform
 
 2. CREATE A VIRTUAL ENVIRONMENT:
    ``` bash
