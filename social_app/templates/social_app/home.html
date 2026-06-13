@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>av social app</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        .feed-container { max-width: 600px; margin: 0 auto; }
+        h1 { color: #1c1e21; text-align: center; }
+        .post-card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .author { font-weight: bold; color: #1877f2; margin-bottom: 5px; }
+        .date { font-size: 0.8rem; color: #65676b; }
+        .content { margin-top: 10px; font-size: 1.1rem; color: #050505; }
+    </style>
+</head>
+<body>
+
+    <div class="feed-container">
+        <h1>av social app Feed</h1>
+
+        <div style="background: white; padding: 20px; margin-bottom: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <textarea name="content" placeholder="What's on your mind?" style="width: 100%; height: 80px; padding: 10px; border: 1px solid #ddd; border-radius:6px; box-sizing: border-box; font-family: inherit; resize: none;" required></textarea>
+                <button type="submit" style="background-color: #1877f2; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 6px; margin-top: 10px; cursor: pointer; width: 100%;">Post to av social app</button>
+            </form>
+        </div>
+
+        <!-- This loops through all the posts we pulled from our database -->
+         {% for post in posts %}
+             <div class="post-card">
+                <div class="author">
+                    <a href="{% url 'user_profile' post.author.username %}" style="text-decoration: none; color: #1877f2; font-weight: bold;">
+                        @{{ post.author.username }}
+                    </a>
+                </div>
+                <div class="date">{{ post.created_at|date:"M d, Y H:i" }}</div>
+                <div class="content">{{ post.content }}</div>
+                <!-- Like Button Component -->
+                 <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                    <form method="POST" action="" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        <button type="submit" name="submit_like" style="background: none; border: none; color: #e0245e; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0;">
+                            ❤️ <span style="color: #65676b; font-size: 0.9rem; font-family: inherit;">Like</span>
+                        </button>
+                    </form>
+                    <!-- Placeholder text to display total count letter -->
+                     <span style="font-size: 0.9rem; color: #65676b;">({{ post.likes.count }})</span>
+                 </div>
+                <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;">
+                    {% for comment in post.comments.all %}
+                        <div style="font-size: 0.9rem; margin-bottom: 5px;">
+                            <strong style="color: #1877f2;">@{{ comment.author.username }}:</strong> {{ comment.content }}
+                        </div>
+                    {% endfor %}
+
+                    <form method="POST" action="" style="display: flex; margin-top: 10px;">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        <input type="text" name="comment_content" placeholder="Write a comment..." style="flex-grow: 1; padding: 6px 10px; border: 1px solid #ddd; border-radius: 20px; font-size: 0.9rem;" required>
+                        <button type="submit" name="submit_comment" style="background: none; border: none; color: #1877f2; font-weight: bold; cursor: pointer; margin-left: 8px;">Reply</button>
+                    </form>
+                </div>
+             </div>
+         {% empty %}
+             <p style="text-align: center; color: #65676b;">No posts in the feed yet!</p>
+         {% endfor %}
+    </div>
+
+</body>
+</html>
